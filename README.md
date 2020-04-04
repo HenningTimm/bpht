@@ -1,8 +1,8 @@
 # BPHT - A Bitpacked Hopscotch Hash Table
 
 BPHT is a specialized hash table aimed to offer fast access to 32-bit integer values by using bit-packing and quotienting.
-It uses hopscotch hashing**[1]** to resolve collisions and stores hop bits bit-packed into the data array to avoid compulsory cache misses.
-To maintain resizability without explicitly saving keys, it uses quotienting**[2]** to be able to restore hash values.
+It uses hopscotch hashing __[1]__ to resolve collisions and stores hop bits bit-packed into the data array to avoid compulsory cache misses.
+To maintain resizability without explicitly saving keys, it uses quotienting __[2]__ to be able to restore hash values.
 This architecture allows efficient resize operations with constant additional memory, but imposes some restrictions:
 
 * Stored values have to be `u32`
@@ -97,7 +97,7 @@ Due to this design, the size of the hash table introduces a maximum number of po
 
 
 
-== References ==
+## References
 
 [1] Herlihy et al.: http://people.csail.mit.edu/shanir/publications/disc2008_submission_98.pdf
 
