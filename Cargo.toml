@@ -9,7 +9,7 @@ repository = "https://github.com/HenningTimm/bpht"
 documentation = "https://docs.rs/bpht"
 readme = "README.md"
 license = "MIT"
-keywords = ["hash", "hashing", "hash table"]
+keywords = ["hash", "hashing"]
 categories = ["data-structures"]
 
 
