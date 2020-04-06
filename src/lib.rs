@@ -781,7 +781,7 @@ impl BPHT {
             0 => {
                 // this key was not yet present
                 // insert it with a count of 1
-                return self.insert(key, 1);
+                self.insert(key, 1)
             }
             1 => {
                 // This key was already present
@@ -789,7 +789,7 @@ impl BPHT {
                 let hit_address = hit_addresses[0];
                 let (value, fingerprint, hop_bits) = self.unpack(self.table[hit_address]);
                 self.table[hit_address] = self.repack_value(value + 1, fingerprint, hop_bits);
-                return Ok(());
+                Ok(())
             }
             x => {
                 // This should not arise when using the table for q-gram counting
