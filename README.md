@@ -26,48 +26,60 @@ A BPHT requires to explicitly pass key-value pairs to the table.
 There are two possible way to use a BPHT, hash table mode and counter mode.
 
 For hash table mode use the `insert(key, value)` method to put entries into the table and the `get.(key)` method to retrieve all values inserted for the given key.
-
-```rust
-let h = 8;  // hopscotch neighborhood size
-let u = 2_u64.pow(25) as usize;  // Initial hash table address space size
-let mut ht = bpht::BPHT::new(h, u);
-
-// these should be hash values
-let keys: Vec<u64> = vec![339383137916411693, 339383137916411693, 9570299963413069330, 11149767687988377925];
-let values =  vec![42, 23, 47, 11];
-for  (key, value) in  keys.iter().zip(values.iter()){
-    ht.insert(key, value);
-}
-
-ht.get(339383137916411693);
-// returns Some([42, 23])
-ht.get(9570299963413069330);
-// returns Some([47])
-ht.get(0);
-// returns None
-```
-
 In counting mode, you do not need to pass a value.
 Use the `increment_count(key)` and `get_count(key)` methods:
 
-```rust
-let h = 8;  // hopscotch neighborhood size
-let u = 2_u64.pow(25) as usize;  // Initial hash table address space size
-let mut ht = bpht::BPHT::new(h, u);
 
-// these should be hash values
-let keys: Vec<u64> = vec![339383137916411693, 339383137916411693, 9570299963413069330, 11149767687988377925];
-let values =  vec![42, 23, 47, 11];
-for  (key, value) in  keys.iter().zip(values.iter()){
-    ht.increment_count(key, value);
+```rust
+use bpht;
+
+
+fn test_normal() -> Result<(), &'static str>{
+    let h = 8;  // Hopscotch neighborhood size
+    let u = 2_u64.pow(25) as usize;  // Initial hash table address space size
+    let allow_resize = true;  // Allow the table to perform resize operations
+    let mut ht = bpht::BPHT::new(h, u, allow_resize)?;
+    
+    // these should be hash values
+    let keys: Vec<u32> = vec![681141441, 681141441, 4274363488, 2008780323];
+    let values =  vec![42, 23, 47, 11];
+    for  (key, value) in  keys.iter().zip(values.iter()){
+        ht.insert(*key, *value)?;
+    }
+
+    assert_eq!(ht.get(681141441), Some(vec![42, 23]));
+    assert_eq!(ht.get(4274363488), Some(vec![47]));
+    assert_eq!(ht.get(17), None);
+    Ok(())
 }
 
-ht.get_count(339383137916411693);
-// returns Some(2)
-ht.get(9570299963413069330);
-// returns Some(1)
-ht.get(0);
-// returns None
+
+fn test_counting() -> Result<(), &'static str>{
+    let h = 8;  // Hopscotch neighborhood size
+    let u = 2_u64.pow(25) as usize;  // Initial hash table address space size
+    let allow_resize = true;  // Allow the table to perform resize operations
+    let mut ht = bpht::BPHT::new(h, u, allow_resize)?;
+    
+    // these should be hash values
+    let keys: Vec<u32> = vec![681141441, 681141441, 4274363488, 2008780323];
+    // Count the number of times keys are encountered
+    for  key in keys {
+        ht.increment_count(key)?;
+    }
+
+    assert_eq!(ht.get_count(681141441), Some(2));
+    assert_eq!(ht.get_count(4274363488), Some(1));
+    assert_eq!(ht.get_count(17), None);
+    Ok(())
+}
+
+
+fn main() -> Result<(), &'static str>{
+    test_normal()?;
+    test_counting()?;
+    Ok(())
+}
+
 ```
 
 
