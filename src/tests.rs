@@ -103,10 +103,6 @@ mod tests {
         }
     }
 
-
-
-
-    
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // Test cases
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -346,19 +342,19 @@ mod tests {
         let h = 4;
         let size = 32;
         let mut ht = BPHT::new(h, size, true).unwrap();
-        
+
         // |addr|fp|
         ht.insert(0b00011_000_00000000_00000000_00000011, 1)
             .unwrap();
         assert_eq!(ht.table[3], 0b001_00000000_00000000_00000000_0011_0001);
-        
+
         // this requires a shift
         // |addr|fp|
         ht.insert(0b00011_000_00000000_00000000_00000101, 3)
             .unwrap();
         assert_eq!(ht.table[3], 0b001_00000000_00000000_00000000_0011_0011);
         assert_eq!(ht.table[4], 0b011_00000000_00000000_00000000_0101_0000);
-        
+
         // this requires another shift
         // |addr|fp|
         ht.insert(0b00100_000_00000000_00000000_00001001, 7)
@@ -579,7 +575,6 @@ mod tests {
         );
     }
 
-
     #[test]
     fn compact() {
         let h = 5;
@@ -593,7 +588,7 @@ mod tests {
                 0b_101010_00000000_00000000_00000101_010_10101, // 3
                 0,                                              // 4
                 0b_101011_00000000_00000000_00000101_011_00000, // 5
-                0,                                              // 6 
+                0,                                              // 6
                 0b_101100_00000000_00000000_00000101_100_00000, // 7
                 0,
                 0,
@@ -625,10 +620,10 @@ mod tests {
                 0,                                              // 1
                 0,                                              // 2
                 0b_101010_00000000_00000000_00000101_010_00111, // 3
-                0b_101100_00000000_00000000_00000101_100_00000, // 4  <- target address. Has one slot that can be freed by moving entry from 5 to 3 
-                0b_101011_00000000_00000000_00000101_011_00000, // 5  
-                0, // 6 
-                0, // 7
+                0b_101100_00000000_00000000_00000101_100_00000, // 4  <- target address. Has one slot that can be freed by moving entry from 5 to 3
+                0b_101011_00000000_00000000_00000101_011_00000, // 5
+                0,                                              // 6
+                0,                                              // 7
                 0,
                 0,
                 0,
@@ -649,7 +644,7 @@ mod tests {
         color_backtrace::install();
         let h = 7_usize;
 
-        let mut table = vec![0_u64; (128+h-1) as usize];
+        let mut table = vec![0_u64; (128 + h - 1) as usize];
         eprintln!("{:?}", table);
         {
             table[3] = 0b_001__00000000_00000000_00000000_1__1110101;
@@ -672,19 +667,16 @@ mod tests {
             in_resize: false,
             allow_resize: false,
         };
-        
+
         ht.compact(3);
 
-        let mut expected_table = vec![0_u64; (128+h-1) as usize];
+        let mut expected_table = vec![0_u64; (128 + h - 1) as usize];
         expected_table[3] = 0b_001__00000000_00000000_00000000_1__0011111;
         expected_table[5] = 0b_010__00000000_00000000_00000001_0__0000000;
         expected_table[7] = 0b_011__00000000_00000000_00000001_1__0000000;
         expected_table[6] = 0b_100__00000000_00000000_00000010_0__0000000;
         expected_table[4] = 0b_101__00000000_00000000_00000010_1__0000000;
-        assert_eq!(
-            ht.table,
-            expected_table,
-        );
+        assert_eq!(ht.table, expected_table,);
     }
 
     #[test]
@@ -692,7 +684,7 @@ mod tests {
         color_backtrace::install();
         let h = 7_usize;
 
-        let mut table = vec![0_u64; (128+h-1) as usize];
+        let mut table = vec![0_u64; (128 + h - 1) as usize];
         eprintln!("{:?}", table);
         {
             table[3] = 0b_001__00000000_00000000_00000000_1__1110101;
@@ -716,23 +708,20 @@ mod tests {
             in_resize: false,
             allow_resize: false,
         };
-        
+
         ht.print_ht_fw();
         ht.compact(3);
         ht.print_ht_fw();
-        let mut expected_table = vec![0_u64; (128+h-1) as usize];
+        let mut expected_table = vec![0_u64; (128 + h - 1) as usize];
         expected_table[3] = 0b_001__00000000_00000000_00000000_1__0111101;
         expected_table[4] = 0b_010__00000000_00000000_00000001_0__0000001;
         expected_table[5] = 0b_010__00000000_00000000_00000001_0__0000000;
         expected_table[7] = 0b_011__00000000_00000000_00000001_1__0000000;
         expected_table[8] = 0b_100__00000000_00000000_00000010_0__0000000;
         expected_table[6] = 0b_101__00000000_00000000_00000010_1__0000000;
-        assert_eq!(
-            ht.table,
-            expected_table,
-        );
+        assert_eq!(ht.table, expected_table,);
     }
-    
+
     /// Do items before the target address successfully get shifted?
     #[test]
     fn insert_with_back_influence_shift() {
@@ -745,9 +734,9 @@ mod tests {
                 0,                                             // 1
                 0,                                             // 2
                 0b000000_00000000_00000000_00000000_0000_0100, // 3
-                0b101010_00000000_00000000_00000010_1010_1101, // 4  <- target address. Has one slot that can be freed by moving entry from 5 to 3 
+                0b101010_00000000_00000000_00000010_1010_1101, // 4  <- target address. Has one slot that can be freed by moving entry from 5 to 3
                 0b010001_00000000_00000000_00000000_0011_0000, // 5  <- overflow from 3
-                0b101011_00000000_00000000_00000010_1011_0000, // 6 
+                0b101011_00000000_00000000_00000010_1011_0000, // 6
                 0b101100_00000000_00000000_00000010_1100_0000, // 7
                 0,
                 0,
@@ -787,9 +776,9 @@ mod tests {
                 0,                                             // 1
                 0,                                             // 2
                 0b010001_00000000_00000000_00000000_0011_0001, // 3
-                0b101010_00000000_00000000_00000010_1010_1111, // 4  <- target address. Has one slot that can be freed by moving entry from 5 to 3 
-                0b101101_00000000_00000000_00000010_1101_0000, // 5  
-                0b101011_00000000_00000000_00000010_1011_0000, // 6 
+                0b101010_00000000_00000000_00000010_1010_1111, // 4  <- target address. Has one slot that can be freed by moving entry from 5 to 3
+                0b101101_00000000_00000000_00000010_1101_0000, // 5
+                0b101011_00000000_00000000_00000010_1011_0000, // 6
                 0b101100_00000000_00000000_00000010_1100_0000, // 7
                 0,
                 0,
@@ -806,7 +795,6 @@ mod tests {
         );
     }
 
-    
     #[test]
     fn insert_with_long_shift() {
         let h = 4;
@@ -875,7 +863,7 @@ mod tests {
                 0,
             ],
         )
-        // NOTE: This test might require a rework. 
+        // NOTE: This test might require a rework.
     }
 
     #[test]
@@ -1525,13 +1513,11 @@ mod tests {
         assert_eq!(nr_evaluated, 88);
     }
 
-
     #[test]
     fn complete_saturation() {
         color_backtrace::install();
 
         let mut rng = rand::thread_rng();
-
 
         let mut nr_evaluated = 0;
         for (size_power, h) in iproduct!(5..16, 3..16) {
@@ -1554,25 +1540,31 @@ mod tests {
                     continue; // skip all invalid configurations
                 }
             };
-        
+
             let mut keys: Vec<u32> = (0..2_u32.pow(size_power))
-                .map(|x| x << (32-size_power))
+                .map(|x| x << (32 - size_power))
                 .collect();
             keys.shuffle(&mut rng);
 
-            
             for key in keys.iter() {
                 if let Ok(()) = ht.insert(*key, 42) {
                 } else {
                     // ht._print_ht_fw();
                     eprintln!("Crashed with fill rate: {}", ht.fill_rate());
-                    
+
                     ht.insert(*key, 42).unwrap();
                     panic!("Overflow")
                 };
             }
-            eprintln!("Expected fill rate: {}\nGot: {}", ht.fill_rate(), (initial_u as f64) / ((initial_u as u64 + h as u64 - 1) as f64));
-            assert_eq!(ht.fill_rate(), (initial_u as f64) / (initial_u as u64 + h as u64 - 1) as f64);
+            eprintln!(
+                "Expected fill rate: {}\nGot: {}",
+                ht.fill_rate(),
+                (initial_u as f64) / ((initial_u as u64 + h as u64 - 1) as f64)
+            );
+            assert_eq!(
+                ht.fill_rate(),
+                (initial_u as f64) / (initial_u as u64 + h as u64 - 1) as f64
+            );
         }
         // there are 88 valid parameter combinations that can be evaluated
         // for the parameters iproduct!(5..16, 3..16)

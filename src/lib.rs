@@ -25,7 +25,6 @@ use serde::{Deserialize, Serialize};
 use std::fs::File;
 use std::io::{BufReader, BufWriter};
 
-
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct BPHT {
     h: usize,
@@ -105,15 +104,12 @@ impl BPHT {
     pub fn load(path: &str) -> BPHT {
         let loaded_hht: BPHT;
         {
-            let mut f =
-                BufReader::new(File::open(path).unwrap_or_else(|_| {
-                    panic!("Opening the file {} did not work", path)
-                }));
+            let mut f = BufReader::new(
+                File::open(path)
+                    .unwrap_or_else(|_| panic!("Opening the file {} did not work", path)),
+            );
             loaded_hht = deserialize_from(&mut f).unwrap_or_else(|_| {
-                panic!(
-                    "Deserializing the BPHT from file {} did not work",
-                    path
-                )
+                panic!("Deserializing the BPHT from file {} did not work", path)
             });
         }
         loaded_hht
@@ -132,7 +128,7 @@ impl BPHT {
     }
 
     /// Return the hopscotch neighborhood size H.
-    pub fn get_h(&self) -> usize{
+    pub fn get_h(&self) -> usize {
         self.h
     }
 
@@ -151,7 +147,7 @@ impl BPHT {
         }
         nonzero as f64 / (self.table.len() as f64)
     }
-    
+
     /// Compute the fingerprint length for a given size u
     fn fp_length_for(u: u32) -> usize {
         (2_u64.pow(32) as f64 / f64::from(u)).log2().floor() as usize
@@ -382,11 +378,10 @@ impl BPHT {
         }
     }
 
-
     /// Shift entries towards the address within one neighbourhood
     /// This should only be possible when deletions occurred.
     /// It is currently not used per default since its use has not yet been evaluated.
-    pub fn compact(&mut self, address: usize) -> Option<usize>{
+    pub fn compact(&mut self, address: usize) -> Option<usize> {
         // get hop bit mask showing free (0) and filled (1) positions for the current slot
         let mut shifting_hop_bits = self.initialize_insert_hop_bits(address);
         let mut occupied_positions = self.occupied_positions(address);
@@ -405,31 +400,28 @@ impl BPHT {
                 moved += 1;
 
                 let address_from = address + highest_occupied;
-                
+
                 let entry = self.table[address_from];
                 let (value, fp, tmp_hop_bits) = self.unpack(entry);
 
                 let hop_bits = self.get_hop_bits(address);
 
                 let mut new_hop_bits_for_mca = self.unset_hop_bit(hop_bits, highest_occupied);
-                new_hop_bits_for_mca =
-                    self.set_hop_bit(new_hop_bits_for_mca, target_offset);
+                new_hop_bits_for_mca = self.set_hop_bit(new_hop_bits_for_mca, target_offset);
 
                 self.table[address_from] = self.pack(0, 0, tmp_hop_bits);
                 self.replace_hop_bits(address, new_hop_bits_for_mca);
-                self.set_value(value, fp, address+target_offset);
-                
+                self.set_value(value, fp, address + target_offset);
+
                 occupied_positions.retain(|x| x != &highest_occupied);
                 occupied_positions.push(target_offset);
                 highest_occupied = *occupied_positions.iter().max().unwrap();
-
-            } 
+            }
             // the current position is full
             // shift to look at a farther offset
             target_offset += 1;
             let new_addr = address + target_offset;
             shifting_hop_bits = (shifting_hop_bits >> 1) | self.get_hop_bits(new_addr);
-
         }
         if moved > 0 {
             Some(moved)
@@ -437,7 +429,7 @@ impl BPHT {
             None
         }
     }
-    
+
     /// Create a free address for insertion by shifting items to higher
     /// addresses in their respective pages.
     /// In other words: Try to shift an empty slot towards the target address
@@ -817,7 +809,7 @@ impl BPHT {
         // Get address and fingerprint
         let (address, query_fp) = self.split_key(key);
         let query_fp = u64::from(query_fp);
-        
+
         // identify positions with target address.
         // these can contain soft collisions with different
         // fingerprint
@@ -836,16 +828,14 @@ impl BPHT {
                 Some(value)
             }
         }
-
     }
-
 
     /// Get all entries for the given key in a Option<Vector>.
     /// If no entry is found, return None.
     pub fn get(&self, key: u32) -> Option<Vec<u32>> {
         // Initialize output. At most h hits can be found.
         let mut hits = Vec::with_capacity(self.h);
-        
+
         // Get address and fingerprint
         let (address, query_fp) = self.split_key(key);
 
@@ -897,5 +887,4 @@ impl BPHT {
 
         Ok(())
     }
-
 }
