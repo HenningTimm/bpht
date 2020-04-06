@@ -12,7 +12,7 @@ This architecture allows efficient resize operations with constant additional me
 
 * Stored values have to be `u32`
 * Hash values (keys) have to be `u32`
-* Hash values (keys) should be well distributed between 0 and 2^{32}
+* Hash values (keys) should be well distributed between 0 and 2^{32} - 1
 * Hash table sizes (`u`) have to be a power of 2
 
 Note that this is **not** a general purpose hash table.
@@ -34,7 +34,7 @@ Use the `increment_count(key)` and `get_count(key)` methods:
 use bpht;
 
 
-fn test_normal() -> Result<(), &'static str>{
+fn test_hash_table_mode() -> Result<(), &'static str>{
     let h = 8;  // Hopscotch neighborhood size
     let u = 2_u64.pow(25) as usize;  // Initial hash table address space size
     let allow_resize = true;  // Allow the table to perform resize operations
@@ -54,7 +54,7 @@ fn test_normal() -> Result<(), &'static str>{
 }
 
 
-fn test_counting() -> Result<(), &'static str>{
+fn test_counting_mode() -> Result<(), &'static str>{
     let h = 8;  // Hopscotch neighborhood size
     let u = 2_u64.pow(25) as usize;  // Initial hash table address space size
     let allow_resize = true;  // Allow the table to perform resize operations
@@ -75,8 +75,8 @@ fn test_counting() -> Result<(), &'static str>{
 
 
 fn main() -> Result<(), &'static str>{
-    test_normal()?;
-    test_counting()?;
+    test_hash_table_mode()?;
+    test_counting_mode()?;
     Ok(())
 }
 
@@ -95,9 +95,12 @@ Example: u = 2^{22}
 => 32 - 22 = 10 remainder bits (r)
 
 Key as
-Bit vector: 0b_00000000_00000000_00000000_00000000
+Bit vector: 0b_00000000_00000000_11111100_00101010
                |-----------22---------||---10----|
 Quotiented: 0b_aaaaaaaa_aaaaaaaa_aaaaaarr_rrrrrrrr
+
+Address:   0b_111111
+Remainder: 0b_101010
 ```
 This setup was chosen since it allows efficient resize operations by just moving one remainder bit to the address bits.
 Note, however, that entering small keys can easily result in overflowing hopscotch neighborhoods.
