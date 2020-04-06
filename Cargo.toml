@@ -1,15 +1,24 @@
 [package]
 name = "bpht"
 version = "1.0.0"
-authors = ["Henning Timm <henning.timm@tu-dortmund.de>"]
 edition = "2018"
+authors = ["Henning Timm <henning.timm@tu-dortmund.de>"]
+description = "A bit-packed hash table implementation of hopscotch hashing for 32-bit keys and values."
+homepage = "https://github.com/HenningTimm/bpht"
+repository = "https://github.com/HenningTimm/bpht"
+documentation = "https://docs.rs/bpht"
+readme = "README.md"
+license = "MIT"
+keywords = ["hash", "hashing", "hash table"]
+categories = ["data-structures"]
 
-[dependencies]
+
+[dev-dependencies]
+color-backtrace = { version = "0.2" }
 rand = "0.7.2"
 rand_distr = "0.2.2"
-color-backtrace = { version = "0.2" }
 itertools = "0.8.1"
-structopt = "0.3"
+
+[dependencies]
 serde = {version = "1.0.104", features = ["derive"]}
 bincode = "1.2.1"
-needletail = "^0.3.1"

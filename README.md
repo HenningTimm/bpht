@@ -1,3 +1,8 @@
+[![Build Status](https://github.com/HenningTimm/bpht/workflows/Rust/badge.svg)](https://github.com/HenningTimm/bpht/actions)
+[![creates.io-version](https://img.shields.io/crates/v/bpht.svg)](https://crates.io/crates/bpht)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![docs.rs](https://docs.rs/bpht/badge.svg)](https://docs.rs/bpht)
+
 # BPHT - A Bitpacked Hopscotch Hash Table
 
 BPHT is a specialized hash table aimed to offer fast access to 32-bit integer values by using bit-packing and quotienting.
@@ -11,7 +16,7 @@ This architecture allows efficient resize operations with constant additional me
 * Hash table sizes (`u`) have to be a power of 2
 
 Note that this is **not** a general purpose hash table.
-It requires you to pre-compute hash values and have at least a rough idea of the number of entries you want to insert.
+It requires you to pre-compute hash values and have at least a ballpark estimate of the number of entries you want to insert.
 
 
 
