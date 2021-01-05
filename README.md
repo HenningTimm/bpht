@@ -2,6 +2,7 @@
 [![creates.io-version](https://img.shields.io/crates/v/bpht.svg)](https://crates.io/crates/bpht)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![docs.rs](https://docs.rs/bpht/badge.svg)](https://docs.rs/bpht)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.4065163.svg)](https://doi.org/10.5281/zenodo.4065163)
 
 # BPHT - A Bitpacked Hopscotch Hash Table
 
